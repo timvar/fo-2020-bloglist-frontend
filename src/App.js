@@ -3,11 +3,11 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-const ShowBlogs = ({ blogs, user }) => {
+const ShowBlogs = ({ blogs, user, handleLogout }) => {
   return (
     <>
       <h2>blogs</h2>
-      <ShowUser user={user} />
+      <ShowUser user={user} handleLogout={handleLogout} />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
@@ -15,10 +15,10 @@ const ShowBlogs = ({ blogs, user }) => {
   )
 }
 
-const ShowUser = ({ user }) => {
+const ShowUser = ({ user, handleLogout }) => {
   return (
     <>
-      <p>{user.name} logged in</p>
+      <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
     </>
   )
 }
@@ -65,17 +65,32 @@ const App = () => {
     )
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
-      console.log('user', user)
+      window.localStorage.setItem(
+        'loggedBlogAppUser', JSON.stringify(user)
+      )
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (error) {
       console.log('wrong username or password')
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogAppUser')
+    setUser(null)
   }
 
   const handleUsername = (event) => {
@@ -89,7 +104,7 @@ const App = () => {
   return (
     <div>
       {user ?
-        <ShowBlogs blogs={blogs} user={user} />
+        <ShowBlogs blogs={blogs} user={user} handleLogout={handleLogout} />
         :
         <LoginForm
           handleLogin={handleLogin}
