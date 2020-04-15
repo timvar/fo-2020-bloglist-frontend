@@ -15,10 +15,10 @@ const Notification = ({ message, messageClass }) => (
     null
 )
 
-const ShowBlogs = ({ blogs }) => (
+const ShowBlogs = ({ blogs, handleAddLike }) => (
   <>
     {blogs.map(blog =>
-      <TogglableBlog buttonLabel='view' key={blog.id} >
+      <TogglableBlog buttonLabel='view' key={blog.id} handleAddLike={handleAddLike} >
         <Blog key={blog.id} blog={blog} />
       </TogglableBlog>)}
   </>
@@ -90,6 +90,12 @@ const App = () => {
     }
   }
 
+  const handleAddLike = async (blog) => {
+    blog.likes += 1
+    const updatedBlog = await blogService.updateBlog(blog, blog.id)
+    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     setUser(null)
@@ -117,7 +123,8 @@ const App = () => {
           <ShowBlogs
             blogs={blogs}
             user={user}
-            handleLogout={handleLogout} />
+            handleLogout={handleLogout}
+            handleAddLike={handleAddLike} />
         </>
         :
         <LoginForm

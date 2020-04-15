@@ -25,5 +25,16 @@ const createBlog = async (blog) => {
   }
 }
 
-export default { getAll, createBlog, setToken}
+const updateBlog = async (blog, id) => {
+  const config = {
+    headers: {Authorization: token}
+  }
+  try {
+    return await (await (axios.put(`${baseUrl}/${id}`, blog, config))).data
+  } catch (error) {
+    console.log('update blog failed')
+  }
+}
+
+export default { getAll, createBlog, setToken, updateBlog}
  
