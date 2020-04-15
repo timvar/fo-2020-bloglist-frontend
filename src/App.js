@@ -23,9 +23,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [messageClass, setMessageClass] = useState('')
   const createBlogRef = React.createRef()
@@ -45,16 +42,23 @@ const App = () => {
     }
   }, [])
 
-  const handleTitle = event => {
-    setTitle(event.target.value)
-  }
-
-  const handleAuthor = event => {
-    setAuthor(event.target.value)
-  }
-
-  const handleUrl = event => {
-    setUrl(event.target.value)
+  const handleAddBlog = async (newBlog) => {
+    createBlogRef.current.toggleVisibility()
+    try {
+      const blog = await blogService.createBlog(newBlog)
+      setBlogs(blogs.concat(blog))
+      setMessageClass('message')
+      setMessage(`a new blog ${blog.title} by ${blog.author} added`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    } catch (error) {
+      setMessageClass('error-message')
+      setMessage('create blog failed');
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    } 
   }
 
   const handleLogin = async (event) => {
@@ -91,34 +95,6 @@ const App = () => {
     setPassword(event.target.value)
   }
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault()
-    createBlogRef.current.toggleVisibility()
-    try {
-      const blog = await blogService.createBlog({
-        title,
-        author,
-        url
-      })
-      setBlogs(blogs.concat(blog))
-      setMessageClass('message')
-      setMessage(`a new blog ${blog.title} by ${blog.author} added`);
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
-    } catch (error) {
-      setMessageClass('error-message')
-      setMessage('create blog failed');
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
-    } finally {
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    }
-  }
-
   return (
     <>
       <Notification message={message} messageClass={messageClass} />
@@ -128,19 +104,12 @@ const App = () => {
           <ShowUser user={user} handleLogout={handleLogout} />
           <Togglable buttonLabel='new blog' ref={createBlogRef}>
             <CreateBlog
-              handleCreateBlog={handleCreateBlog}
-              title={title}
-              handleTitle={handleTitle}
-              author={author}
-              handleAuthor={handleAuthor}
-              url={url}
-              handleUrl={handleUrl} />
+              handleAddBlog={handleAddBlog} />
           </Togglable>
           <ShowBlogs
             blogs={blogs}
             user={user}
-            handleLogout={handleLogout}
-          />
+            handleLogout={handleLogout} />
         </>
         :
         <LoginForm

@@ -1,20 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const CreateBlog = (props) => {
-  const {
-    handleCreateBlog,
-    title,
-    handleTitle,
-    author,
-    handleAuthor,
-    url,
-    handleUrl
-  } = props
+const CreateBlog = ({ handleAddBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const handleTitle = (event) => {
+    setTitle(event.target.value)
+  }
+
+  const handleAuthor = (event) => {
+    setAuthor(event.target.value)
+  }
+
+  const handleUrl = (event) => {
+    setUrl(event.target.value)
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    handleAddBlog({
+      title,
+      author,
+      url
+    })
+    setAuthor('')
+    setTitle('')
+    setUrl('')
+  } 
 
   return (
     <>
       <h1>create new</h1>
-      <form onSubmit={handleCreateBlog}>
+      <form onSubmit={addBlog}>
         <div>
           title:
             <input
