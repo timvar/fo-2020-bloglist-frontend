@@ -5,6 +5,7 @@ import loginService from './services/login'
 import './App.css'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import TogglableBlog from './components/TogglableBlog'
 import CreateBlog from './components/CreateBlog'
 
 const Notification = ({ message, messageClass }) => (
@@ -14,7 +15,14 @@ const Notification = ({ message, messageClass }) => (
     null
 )
 
-const ShowBlogs = ({blogs}) => <>{blogs.map(blog => <Blog key={blog.id} blog={blog} />)}</>
+const ShowBlogs = ({ blogs }) => (
+  <>
+    {blogs.map(blog =>
+      <TogglableBlog buttonLabel='view' key={blog.id} >
+        <Blog key={blog.id} blog={blog} />
+      </TogglableBlog>)}
+  </>
+)
 
 const ShowUser = ({ user, handleLogout }) => <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
@@ -58,7 +66,7 @@ const App = () => {
       setTimeout(() => {
         setMessage(null);
       }, 3000);
-    } 
+    }
   }
 
   const handleLogin = async (event) => {
@@ -102,7 +110,7 @@ const App = () => {
         <>
           <h1>blogs</h1>
           <ShowUser user={user} handleLogout={handleLogout} />
-          <Togglable buttonLabel='new blog' ref={createBlogRef}>
+          <Togglable buttonLabel='create new blog' ref={createBlogRef}>
             <CreateBlog
               handleAddBlog={handleAddBlog} />
           </Togglable>
