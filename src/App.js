@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './App.css'
+
+const Notification = ({ message, messageClass }) => (
+  message ?
+    <div className={messageClass}> {message} </div>
+    :
+    null
+)
 
 const CreateBlog = (props) => {
 
@@ -130,6 +138,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [messageClass, setMessageClass] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -168,7 +178,11 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
     } catch (error) {
-      console.log('wrong username or password')
+      setMessageClass('error-message')
+      setMessage('wrong username or password');
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     } finally {
       setUsername('')
       setPassword('')
@@ -197,13 +211,27 @@ const App = () => {
         url
       })
       setBlogs(blogs.concat(blog))
+      setMessageClass('message')
+      setMessage(`a new blog ${blog.title} by ${blog.author} added`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     } catch (error) {
-      console.log('create blog failed')
+      setMessageClass('error-message')
+      setMessage('create blog failed');
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    } finally {
+      setTitle('')
+      setAuthor('')
+      setUrl('')
     }
   }
 
   return (
     <div>
+      <Notification message={message} messageClass={messageClass} />
       {user ?
         <ShowBlogs
           blogs={blogs}
