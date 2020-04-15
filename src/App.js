@@ -3,11 +3,81 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-const ShowBlogs = ({ blogs, user, handleLogout }) => {
+const CreateBlog = (props) => {
+
+  const {
+    handleCreateBlog,
+    title,
+    handleTitle,
+    author,
+    handleAuthor,
+    url,
+    handleUrl
+  } = props
+
+  return (
+    <>
+      <h1>create new</h1>
+      <form onSubmit={handleCreateBlog}>
+        <div>
+          title:
+            <input
+            type="text"
+            value={title}
+            name="title"
+            onChange={handleTitle}
+          />
+        </div>
+        <div>
+          author:
+            <input
+            type="text"
+            value={author}
+            name="author"
+            onChange={handleAuthor}
+          />
+        </div>
+        <div>
+          url:
+            <input
+            type="text"
+            value={url}
+            name="url"
+            onChange={handleUrl}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </>
+  )
+}
+
+const ShowBlogs = (props) => {
+  const {
+    blogs,
+    user,
+    handleLogout,
+    handleCreateBlog,
+    title,
+    handleTitle,
+    author,
+    handleAuthor,
+    url,
+    handleUrl
+  } = props
+
   return (
     <>
       <h2>blogs</h2>
       <ShowUser user={user} handleLogout={handleLogout} />
+      <CreateBlog
+        handleCreateBlog={handleCreateBlog}
+        title={title}
+        handleTitle={handleTitle}
+        author={author}
+        handleAuthor={handleAuthor}
+        url={url}
+        handleUrl={handleUrl} />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
@@ -15,13 +85,12 @@ const ShowBlogs = ({ blogs, user, handleLogout }) => {
   )
 }
 
-const ShowUser = ({ user, handleLogout }) => {
-  return (
-    <>
-      <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-    </>
-  )
-}
+const ShowUser = ({ user, handleLogout }) => (
+  <>
+    <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+  </>
+)
+
 
 const LoginForm = ({ handleLogin, handleUsername, handlePassword, username, password }) => {
   return (
@@ -58,6 +127,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -70,8 +142,21 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
+
+  const handleTitle = event => {
+    setTitle(event.target.value)
+  }
+
+  const handleAuthor = event => {
+    setAuthor(event.target.value)
+  }
+
+  const handleUrl = event => {
+    setUrl(event.target.value)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -80,11 +165,13 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogAppUser', JSON.stringify(user)
       )
+      blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
     } catch (error) {
       console.log('wrong username or password')
+    } finally {
+      setUsername('')
+      setPassword('')
     }
   }
 
@@ -101,10 +188,35 @@ const App = () => {
     setPassword(event.target.value)
   }
 
+  const handleCreateBlog = async (event) => {
+    event.preventDefault()
+    try {
+      const blog = await blogService.createBlog({
+        title,
+        author,
+        url
+      })
+      setBlogs(blogs.concat(blog))
+    } catch (error) {
+      console.log('create blog failed')
+    }
+  }
+
   return (
     <div>
       {user ?
-        <ShowBlogs blogs={blogs} user={user} handleLogout={handleLogout} />
+        <ShowBlogs
+          blogs={blogs}
+          user={user}
+          handleLogout={handleLogout}
+          handleAuthor={handleAuthor}
+          handleTitle={handleTitle}
+          handleUrl={handleUrl}
+          author={author}
+          title={title}
+          url={url}
+          handleCreateBlog={handleCreateBlog}
+        />
         :
         <LoginForm
           handleLogin={handleLogin}
