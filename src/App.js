@@ -3,6 +3,9 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './App.css'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
+import CreateBlog from './components/CreateBlog'
 
 const Notification = ({ message, messageClass }) => (
   message ?
@@ -11,124 +14,9 @@ const Notification = ({ message, messageClass }) => (
     null
 )
 
-const CreateBlog = (props) => {
+const ShowBlogs = ({blogs}) => <>{blogs.map(blog => <Blog key={blog.id} blog={blog} />)}</>
 
-  const {
-    handleCreateBlog,
-    title,
-    handleTitle,
-    author,
-    handleAuthor,
-    url,
-    handleUrl
-  } = props
-
-  return (
-    <>
-      <h1>create new</h1>
-      <form onSubmit={handleCreateBlog}>
-        <div>
-          title:
-            <input
-            type="text"
-            value={title}
-            name="title"
-            onChange={handleTitle}
-          />
-        </div>
-        <div>
-          author:
-            <input
-            type="text"
-            value={author}
-            name="author"
-            onChange={handleAuthor}
-          />
-        </div>
-        <div>
-          url:
-            <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={handleUrl}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </>
-  )
-}
-
-const ShowBlogs = (props) => {
-  const {
-    blogs,
-    user,
-    handleLogout,
-    handleCreateBlog,
-    title,
-    handleTitle,
-    author,
-    handleAuthor,
-    url,
-    handleUrl
-  } = props
-
-  return (
-    <>
-      <h2>blogs</h2>
-      <ShowUser user={user} handleLogout={handleLogout} />
-      <CreateBlog
-        handleCreateBlog={handleCreateBlog}
-        title={title}
-        handleTitle={handleTitle}
-        author={author}
-        handleAuthor={handleAuthor}
-        url={url}
-        handleUrl={handleUrl} />
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </>
-  )
-}
-
-const ShowUser = ({ user, handleLogout }) => (
-  <>
-    <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-  </>
-)
-
-
-const LoginForm = ({ handleLogin, handleUsername, handlePassword, username, password }) => {
-  return (
-    <>
-      <h1>log in to application</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-            <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={handleUsername}
-          />
-        </div>
-        <div>
-          password
-            <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={handlePassword}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </>
-  )
-}
-
+const ShowUser = ({ user, handleLogout }) => <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -140,6 +28,7 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [messageClass, setMessageClass] = useState('')
+  const createBlogRef = React.createRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -204,6 +93,7 @@ const App = () => {
 
   const handleCreateBlog = async (event) => {
     event.preventDefault()
+    createBlogRef.current.toggleVisibility()
     try {
       const blog = await blogService.createBlog({
         title,
@@ -230,21 +120,28 @@ const App = () => {
   }
 
   return (
-    <div>
+    <>
       <Notification message={message} messageClass={messageClass} />
       {user ?
-        <ShowBlogs
-          blogs={blogs}
-          user={user}
-          handleLogout={handleLogout}
-          handleAuthor={handleAuthor}
-          handleTitle={handleTitle}
-          handleUrl={handleUrl}
-          author={author}
-          title={title}
-          url={url}
-          handleCreateBlog={handleCreateBlog}
-        />
+        <>
+          <h1>blogs</h1>
+          <ShowUser user={user} handleLogout={handleLogout} />
+          <Togglable buttonLabel='new blog' ref={createBlogRef}>
+            <CreateBlog
+              handleCreateBlog={handleCreateBlog}
+              title={title}
+              handleTitle={handleTitle}
+              author={author}
+              handleAuthor={handleAuthor}
+              url={url}
+              handleUrl={handleUrl} />
+          </Togglable>
+          <ShowBlogs
+            blogs={blogs}
+            user={user}
+            handleLogout={handleLogout}
+          />
+        </>
         :
         <LoginForm
           handleLogin={handleLogin}
@@ -253,7 +150,7 @@ const App = () => {
           username={username}
           password={password} />
       }
-    </div>
+    </>
   )
 }
 
