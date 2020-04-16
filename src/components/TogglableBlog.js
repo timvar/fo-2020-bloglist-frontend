@@ -26,8 +26,7 @@ const TogglableBlog = React.forwardRef(({ buttonLabel, children, handleAddLike, 
         {likes} <button onClick={() => handleAddLike(children.props.blog)}>like</button> <br />
 
         {children.props.blog.user ?
-          (children.props.blog.user.username === user.username ? <button onClick={() => handleRemoveBlog(blog)}>remove</button> : '')
-          :
+          (children.props.blog.user.username === user.username ? <button onClick={() => handleRemoveBlog(blog)}>remove</button> : '') :
           ''}
       </div>
     </>

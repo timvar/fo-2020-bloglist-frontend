@@ -6,14 +6,14 @@ const LoginForm = ({
   handleUsername,
   handlePassword,
   username,
-  password
+  password,
 }) => (
     <>
       <h1>log in to application</h1>
       <form onSubmit={handleLogin}>
         <div>
           username
-            <input
+        <input
             type="text"
             value={username}
             name="Username"
@@ -22,7 +22,7 @@ const LoginForm = ({
         </div>
         <div>
           password
-            <input
+        <input
             type="password"
             value={password}
             name="Password"
@@ -39,7 +39,7 @@ LoginForm.propTypes = {
   handleUsername: PropTypes.func.isRequired,
   handlePassword: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired
+  password: PropTypes.string.isRequired,
 }
 
 export default LoginForm

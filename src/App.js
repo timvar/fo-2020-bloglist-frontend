@@ -9,29 +9,44 @@ import TogglableBlog from './components/TogglableBlog'
 import CreateBlog from './components/CreateBlog'
 
 const Notification = ({ message, messageClass }) => (
-  message ?
-    <div className={messageClass}> {message} </div>
-    :
-    null
+  message
+    ?
+    <>
+      < div className={messageClass}>
+        {' '}
+        {message}
+        {' '}
+      </div>
+    </>
+    : null
 )
 
-const ShowBlogs = ({ blogs, handleAddLike, user, handleRemoveBlog }) => {
-  return (
+const ShowBlogs = ({
+  blogs, handleAddLike, user, handleRemoveBlog,
+}) => (
     <>
-      {blogs.map(blog =>
+      {blogs.map((blog) => (
         <TogglableBlog
-          buttonLabel='view'
+          buttonLabel="view"
           key={blog.id}
           handleAddLike={handleAddLike}
           user={user}
-          handleRemoveBlog={handleRemoveBlog}>
+          handleRemoveBlog={handleRemoveBlog}
+        >
           <Blog key={blog.id} blog={blog} />
-        </TogglableBlog>)}
+        </TogglableBlog>
+      ))}
     </>
   )
-}
 
-const ShowUser = ({ user, handleLogout }) => <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+const ShowUser = ({ user, handleLogout }) => (
+  <p>
+    {user.name}
+    {' '}
+logged in
+    <button onClick={handleLogout}>logout</button>
+  </p>
+)
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -43,10 +58,9 @@ const App = () => {
   const createBlogRef = React.createRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs => {
+    blogService.getAll().then((blogs) => {
       setBlogs(blogs.sort((a, b) => b.likes - a.likes))
-    }
-    )
+    })
   }, [])
 
   useEffect(() => {
@@ -64,16 +78,16 @@ const App = () => {
       const blog = await blogService.createBlog(newBlog)
       setBlogs(blogs.concat(blog).sort((a, b) => b.likes - a.likes))
       setMessageClass('message')
-      setMessage(`a new blog ${blog.title} by ${blog.author} added`);
+      setMessage(`a new blog ${blog.title} by ${blog.author} added`)
       setTimeout(() => {
-        setMessage(null);
-      }, 3000);
+        setMessage(null)
+      }, 3000)
     } catch (error) {
       setMessageClass('error-message')
-      setMessage('create blog failed');
+      setMessage('create blog failed')
       setTimeout(() => {
-        setMessage(null);
-      }, 3000);
+        setMessage(null)
+      }, 3000)
     }
   }
 
@@ -82,16 +96,16 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem(
-        'loggedBlogAppUser', JSON.stringify(user)
+        'loggedBlogAppUser', JSON.stringify(user),
       )
       blogService.setToken(user.token)
       setUser(user)
     } catch (error) {
       setMessageClass('error-message')
-      setMessage('wrong username or password');
+      setMessage('wrong username or password')
       setTimeout(() => {
-        setMessage(null);
-      }, 3000);
+        setMessage(null)
+      }, 3000)
     } finally {
       setUsername('')
       setPassword('')
@@ -101,14 +115,14 @@ const App = () => {
   const handleAddLike = async (blog) => {
     blog.likes += 1
     const updatedBlog = await blogService.updateBlog(blog, blog.id)
-    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b).sort((a, b) => b.likes - a.likes))
+    setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)).sort((a, b) => b.likes - a.likes))
   }
 
   const handleRemoveBlog = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       try {
-      await blogService.removeBlog(blog.id)
-      setBlogs(blogs.filter(b => b.id !== blog.id))
+        await blogService.removeBlog(blog.id)
+        setBlogs(blogs.filter((b) => b.id !== blog.id))
       } catch (error) {
         console.log('Remove blog failed.')
       }
@@ -124,36 +138,41 @@ const App = () => {
     setUsername(event.target.value)
   }
 
-  const handlePassword = event => {
+  const handlePassword = (event) => {
     setPassword(event.target.value)
   }
 
   return (
     <>
       <Notification message={message} messageClass={messageClass} />
-      {user ?
-        <>
-          <h1>blogs</h1>
-          <ShowUser user={user} handleLogout={handleLogout} />
-          <Togglable buttonLabel='create new blog' ref={createBlogRef}>
-            <CreateBlog
-              handleAddBlog={handleAddBlog} />
-          </Togglable>
-          <ShowBlogs
-            blogs={blogs}
-            user={user}
-            handleLogout={handleLogout}
-            handleAddLike={handleAddLike}
-            handleRemoveBlog={handleRemoveBlog} />
-        </>
-        :
-        <LoginForm
-          handleLogin={handleLogin}
-          handlePassword={handlePassword}
-          handleUsername={handleUsername}
-          username={username}
-          password={password} />
-      }
+      {user
+        ? (
+          <>
+            <h1>blogs</h1>
+            <ShowUser user={user} handleLogout={handleLogout} />
+            <Togglable buttonLabel="create new blog" ref={createBlogRef}>
+              <CreateBlog
+                handleAddBlog={handleAddBlog}
+              />
+            </Togglable>
+            <ShowBlogs
+              blogs={blogs}
+              user={user}
+              handleLogout={handleLogout}
+              handleAddLike={handleAddLike}
+              handleRemoveBlog={handleRemoveBlog}
+            />
+          </>
+        )
+        : (
+          <LoginForm
+            handleLogin={handleLogin}
+            handlePassword={handlePassword}
+            handleUsername={handleUsername}
+            username={username}
+            password={password}
+          />
+        )}
     </>
   )
 }

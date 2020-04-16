@@ -8,7 +8,7 @@ const Blog = ({ blog }) => (
 )
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired
+  blog: PropTypes.object.isRequired,
 }
 
 export default Blog
