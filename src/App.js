@@ -29,11 +29,8 @@ const ShowBlogs = ({
       <TogglableBlog
         buttonLabel="view"
         key={blog.id}
-        handleAddLike={handleAddLike}
-        user={user}
-        handleRemoveBlog={handleRemoveBlog}
       >
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleAddLike={handleAddLike} user={user} handleRemoveBlog={handleRemoveBlog}   />
       </TogglableBlog>
     ))}
   </>
