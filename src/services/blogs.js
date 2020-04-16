@@ -13,10 +13,10 @@ const getAll = async () => {
   } catch (error) {
     console.log('getAll failed')
   }}
-  
+
 const createBlog = async (blog) => {
   const config = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
   try {
     return await (await (axios.post(baseUrl, blog, config))).data
@@ -27,7 +27,7 @@ const createBlog = async (blog) => {
 
 const updateBlog = async (blog, id) => {
   const config = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
   try {
     return await (await (axios.put(`${baseUrl}/${id}`, blog, config))).data
@@ -38,7 +38,7 @@ const updateBlog = async (blog, id) => {
 
 const removeBlog = async (id) => {
   const config = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
   try {
     await await (axios.delete(`${baseUrl}/${id}`, config))
@@ -47,5 +47,4 @@ const removeBlog = async (id) => {
   }
 }
 
-export default { getAll, createBlog, setToken, updateBlog, removeBlog}
- 
+export default { getAll, createBlog, setToken, updateBlog, removeBlog }

@@ -33,4 +33,6 @@ const TogglableBlog = React.forwardRef(({ buttonLabel, children, handleAddLike, 
   )
 })
 
+TogglableBlog.displayName = 'TogglableBlog'
+
 export default TogglableBlog

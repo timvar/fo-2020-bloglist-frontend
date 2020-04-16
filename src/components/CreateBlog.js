@@ -28,7 +28,7 @@ const CreateBlog = ({ handleAddBlog }) => {
     setAuthor('')
     setTitle('')
     setUrl('')
-  } 
+  }
 
   return (
     <>
@@ -36,7 +36,7 @@ const CreateBlog = ({ handleAddBlog }) => {
       <form onSubmit={addBlog}>
         <div>
           title:
-            <input
+          <input
             type="text"
             value={title}
             name="title"
@@ -45,7 +45,7 @@ const CreateBlog = ({ handleAddBlog }) => {
         </div>
         <div>
           author:
-            <input
+          <input
             type="text"
             value={author}
             name="author"
@@ -54,7 +54,7 @@ const CreateBlog = ({ handleAddBlog }) => {
         </div>
         <div>
           url:
-            <input
+          <input
             type="text"
             value={url}
             name="url"

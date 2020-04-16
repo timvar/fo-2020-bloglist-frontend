@@ -8,31 +8,31 @@ const LoginForm = ({
   username,
   password,
 }) => (
-    <>
-      <h1>log in to application</h1>
-      <form onSubmit={handleLogin}>
-        <div>
+  <>
+    <h1>log in to application</h1>
+    <form onSubmit={handleLogin}>
+      <div>
           username
         <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={handleUsername}
-          />
-        </div>
-        <div>
+          type="text"
+          value={username}
+          name="Username"
+          onChange={handleUsername}
+        />
+      </div>
+      <div>
           password
         <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={handlePassword}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </>
-  )
+          type="password"
+          value={password}
+          name="Password"
+          onChange={handlePassword}
+        />
+      </div>
+      <button type="submit">login</button>
+    </form>
+  </>
+)
 
 LoginForm.propTypes = {
   handleLogin: PropTypes.func.isRequired,

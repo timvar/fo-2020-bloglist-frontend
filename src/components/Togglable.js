@@ -11,7 +11,7 @@ const Togglable = React.forwardRef(({ buttonLabel, children }, ref) => {
   }
 
   useImperativeHandle(ref, () => {
-    return {toggleVisibility}
+    return { toggleVisibility }
   })
 
   return (
@@ -26,5 +26,7 @@ const Togglable = React.forwardRef(({ buttonLabel, children }, ref) => {
     </>
   )
 })
+
+Togglable.displayName = 'Togglable'
 
 export default Togglable
