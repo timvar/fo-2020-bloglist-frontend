@@ -15,14 +15,21 @@ const Notification = ({ message, messageClass }) => (
     null
 )
 
-const ShowBlogs = ({ blogs, handleAddLike }) => (
-  <>
-    {blogs.map(blog =>
-      <TogglableBlog buttonLabel='view' key={blog.id} handleAddLike={handleAddLike} >
-        <Blog key={blog.id} blog={blog} />
-      </TogglableBlog>)}
-  </>
-)
+const ShowBlogs = ({ blogs, handleAddLike, user, handleRemoveBlog }) => {
+  return (
+    <>
+      {blogs.map(blog =>
+        <TogglableBlog
+          buttonLabel='view'
+          key={blog.id}
+          handleAddLike={handleAddLike}
+          user={user}
+          handleRemoveBlog={handleRemoveBlog}>
+          <Blog key={blog.id} blog={blog} />
+        </TogglableBlog>)}
+    </>
+  )
+}
 
 const ShowUser = ({ user, handleLogout }) => <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
@@ -97,6 +104,17 @@ const App = () => {
     setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b).sort((a, b) => b.likes - a.likes))
   }
 
+  const handleRemoveBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+      await blogService.removeBlog(blog.id)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+      } catch (error) {
+        console.log('Remove blog failed.')
+      }
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     setUser(null)
@@ -125,7 +143,8 @@ const App = () => {
             blogs={blogs}
             user={user}
             handleLogout={handleLogout}
-            handleAddLike={handleAddLike} />
+            handleAddLike={handleAddLike}
+            handleRemoveBlog={handleRemoveBlog} />
         </>
         :
         <LoginForm
