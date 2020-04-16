@@ -36,8 +36,9 @@ const App = () => {
   const createBlogRef = React.createRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+    blogService.getAll().then(blogs => {
+      setBlogs(blogs.sort((a, b) => b.likes - a.likes))
+    }
     )
   }, [])
 
@@ -54,7 +55,7 @@ const App = () => {
     createBlogRef.current.toggleVisibility()
     try {
       const blog = await blogService.createBlog(newBlog)
-      setBlogs(blogs.concat(blog))
+      setBlogs(blogs.concat(blog).sort((a, b) => b.likes - a.likes))
       setMessageClass('message')
       setMessage(`a new blog ${blog.title} by ${blog.author} added`);
       setTimeout(() => {
@@ -93,7 +94,7 @@ const App = () => {
   const handleAddLike = async (blog) => {
     blog.likes += 1
     const updatedBlog = await blogService.updateBlog(blog, blog.id)
-    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b).sort((a, b) => b.likes - a.likes))
   }
 
   const handleLogout = () => {
