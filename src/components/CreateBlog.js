@@ -37,6 +37,7 @@ const CreateBlog = ({ handleAddBlog }) => {
         <div>
           title:
           <input
+            id='title'
             type="text"
             value={title}
             name="title"
@@ -46,6 +47,7 @@ const CreateBlog = ({ handleAddBlog }) => {
         <div>
           author:
           <input
+            id='author'
             type="text"
             value={author}
             name="author"
@@ -55,13 +57,14 @@ const CreateBlog = ({ handleAddBlog }) => {
         <div>
           url:
           <input
+            id='url'
             type="text"
             value={url}
             name="url"
             onChange={handleUrl}
           />
         </div>
-        <button type="submit">create</button>
+        <button id='create' type="submit">create</button>
       </form>
     </>
   )
