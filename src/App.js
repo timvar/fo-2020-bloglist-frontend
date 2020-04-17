@@ -30,7 +30,7 @@ const ShowBlogs = ({
         buttonLabel="view"
         key={blog.id}
       >
-        <Blog key={blog.id} blog={blog} handleAddLike={handleAddLike} user={user} handleRemoveBlog={handleRemoveBlog}   />
+        <Blog key={blog.id} blog={blog} handleAddLike={handleAddLike} user={user} handleRemoveBlog={handleRemoveBlog} />
       </TogglableBlog>
     ))}
   </>
@@ -141,6 +141,7 @@ const App = () => {
 
   return (
     <>
+      <h1>Blog application</h1>
       <Notification message={message} messageClass={messageClass} />
       {user
         ? (
