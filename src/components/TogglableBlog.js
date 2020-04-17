@@ -16,10 +16,10 @@ const TogglableBlog = React.forwardRef(({ buttonLabel, children }, ref) => {
 
   return (
     <>
-      <div style={hideWhenVisible}>
-        {author} {title} <button onClick={toggleVisibility}>{buttonLabel}</button>
+      <div style={hideWhenVisible} className='initialContent'>
+        {title} {author} <button onClick={toggleVisibility}>{buttonLabel}</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='togglableContent'>
         {children} <button onClick={toggleVisibility}>hide</button><br />
       </div>
     </>
