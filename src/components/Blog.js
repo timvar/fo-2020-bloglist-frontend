@@ -8,7 +8,7 @@ const Blog = ({ blog, handleAddLike, user, handleRemoveBlog }) => (
     url: {blog.url} <br />
     likes: {blog.likes} <button onClick={() => handleAddLike(blog)}>like</button> <br />
     {blog.user ?
-      (blog.user.username === user.username ? <button onClick={() => handleRemoveBlog(blog)}>remove</button> : '') :
+      (blog.user.username === user.username ? <button id="remove-button" onClick={() => handleRemoveBlog(blog)}>remove</button> : '') :
       ''}
   </>
 )
